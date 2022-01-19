@@ -1,12 +1,32 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { commands, ExtensionContext, window } from 'vscode';
-import * as book from './bookUtil';
-
+import { commands, ExtensionContext, window,workspace } from 'vscode';
+import { buildSocket } from './bookUtil';
+import { io, Socket } from "socket.io-client";
+import axios from 'axios'
+const instance = axios.create({
+	baseURL: 'https://meamoe.ml/koa',
+	timeout: 100000,
+	// headers: {'X-Custom-Header': 'foobar'}
+});
+instance.get('/newCen/free/testExten').then((res) => {
+	console.log(`res`, res.data.msg);
+})
+const socket: Socket = io('wss://meamoe.ml', {
+	transports: ["websocket"]
+	, reconnectionDelayMax: 10000
+	, reconnectionDelay: 5000
+	, forceNew: true
+})
+let bs = buildSocket(socket)
+console.log(`sese`,);
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext) {
 
+
+
+	// socket.connect()
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "thief-book" is now active!');
@@ -37,20 +57,20 @@ export function activate(context: ExtensionContext) {
 
 	// 下一页
 	let getNextPage = commands.registerCommand('extension.getNextPage', () => {
-		let books = new book.Book(context);
-		window.setStatusBarMessage(books.getNextPage());
+		socket.emit('nextPage')
+		// instance.get('/newCen/free/testExten').then((res) => {
+		// 	console.log(`res`,res.data.msg);
+		// })
 	});
 
 	// 上一页
 	let getPreviousPage = commands.registerCommand('extension.getPreviousPage', () => {
-		let books = new book.Book(context);
-		window.setStatusBarMessage(books.getPreviousPage());
+		socket.emit('prevPage')
 	});
 
 	// 跳转某个页面
 	let getJumpingPage = commands.registerCommand('extension.getJumpingPage', () => {
-		let books = new book.Book(context);
-		window.setStatusBarMessage(books.getJumpingPage());
+		// socket.emit('prevPage',workspace.getConfiguration().get('thiefBook.currPageNumber'))
 	});
 
 	context.subscriptions.push(displayCode);

@@ -3,10 +3,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode_1 = require("vscode");
-const book = require("./bookUtil");
+const bookUtil_1 = require("./bookUtil");
+const socket_io_client_1 = require("socket.io-client");
+const axios_1 = require("axios");
+const instance = axios_1.default.create({
+    baseURL: 'https://meamoe.ml/koa',
+    timeout: 100000,
+});
+instance.get('/newCen/free/testExten').then((res) => {
+    console.log(`res`, res.data.msg);
+});
+const socket = socket_io_client_1.io('wss://meamoe.ml', {
+    transports: ["websocket"],
+    reconnectionDelayMax: 10000,
+    reconnectionDelay: 5000,
+    forceNew: true
+});
+let bs = bookUtil_1.buildSocket(socket);
+console.log(`sese`);
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 function activate(context) {
+    // socket.connect()
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "thief-book" is now active!');
@@ -32,18 +50,18 @@ function activate(context) {
     });
     // 下一页
     let getNextPage = vscode_1.commands.registerCommand('extension.getNextPage', () => {
-        let books = new book.Book(context);
-        vscode_1.window.setStatusBarMessage(books.getNextPage());
+        console.log('nextPage');
+        socket.emit('nextPage');
+        // instance.get('/newCen/free/testExten').then((res) => {
+        // 	console.log(`res`,res.data.msg);
+        // })
     });
     // 上一页
     let getPreviousPage = vscode_1.commands.registerCommand('extension.getPreviousPage', () => {
-        let books = new book.Book(context);
-        vscode_1.window.setStatusBarMessage(books.getPreviousPage());
+        socket.emit('prevPage');
     });
     // 跳转某个页面
     let getJumpingPage = vscode_1.commands.registerCommand('extension.getJumpingPage', () => {
-        let books = new book.Book(context);
-        vscode_1.window.setStatusBarMessage(books.getJumpingPage());
     });
     context.subscriptions.push(displayCode);
     context.subscriptions.push(getNextPage);
