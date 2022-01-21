@@ -50,7 +50,6 @@ function activate(context) {
     });
     // 下一页
     let getNextPage = vscode_1.commands.registerCommand('extension.getNextPage', () => {
-        console.log('nextPage');
         socket.emit('nextPage');
         // instance.get('/newCen/free/testExten').then((res) => {
         // 	console.log(`res`,res.data.msg);
@@ -62,6 +61,7 @@ function activate(context) {
     });
     // 跳转某个页面
     let getJumpingPage = vscode_1.commands.registerCommand('extension.getJumpingPage', () => {
+        // socket.emit('prevPage',workspace.getConfiguration().get('thiefBook.currPageNumber'))
     });
     context.subscriptions.push(displayCode);
     context.subscriptions.push(getNextPage);

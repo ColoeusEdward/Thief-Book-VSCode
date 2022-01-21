@@ -158,8 +158,7 @@ export const buildSocket = (socket: Socket) => {
     })
     socket.on('novelContent', (res) => {
         content = res
-        console.log(`res`,res);
-        window.setStatusBarMessage(res);
+        window.setStatusBarMessage(res.text);
     })
     socket.on('error', (res) => {
         console.log('socket error')

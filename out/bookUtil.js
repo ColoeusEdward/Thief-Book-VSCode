@@ -122,8 +122,7 @@ exports.buildSocket = (socket) => {
     });
     socket.on('novelContent', (res) => {
         content = res;
-        console.log(`res`, res);
-        vscode_1.window.setStatusBarMessage(res);
+        vscode_1.window.setStatusBarMessage(res.text);
     });
     socket.on('error', (res) => {
         console.log('socket error');

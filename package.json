@@ -102,7 +102,8 @@
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
 		"postinstall": "node ./node_modules/vscode/bin/install",
-		"test": "yarn run compile && node ./node_modules/vscode/bin/test"
+		"test": "yarn run compile && node ./node_modules/vscode/bin/test",
+		"pkg":"yarn run compile && vsce package"
 	},
 	"devDependencies": {
 		"@types/mocha": "^2.2.42",
