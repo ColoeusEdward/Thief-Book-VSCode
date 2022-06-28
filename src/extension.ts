@@ -1,6 +1,6 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { commands, ExtensionContext, window,workspace } from 'vscode';
+import { commands, ExtensionContext, window, workspace, version } from 'vscode';
 import { buildSocket } from './bookUtil';
 import { io, Socket } from "socket.io-client";
 import axios from 'axios'
@@ -19,7 +19,7 @@ const socket: Socket = io('wss://meamoe.ml', {
 	, forceNew: true
 })
 let bs = buildSocket(socket)
-console.log(`sese`,);
+console.log(`sese`);
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: ExtensionContext) {
@@ -57,6 +57,12 @@ export function activate(context: ExtensionContext) {
 
 	// 下一页
 	let getNextPage = commands.registerCommand('extension.getNextPage', () => {
+		bs.curPageRef.currnet++;
+		if (bs.slicePageNum.currnet >= bs.curPageRef.currnet) {
+			bs.nextPage()
+			return
+		}
+		bs.stateRef.current = 'next'
 		socket.emit('nextPage')
 		// instance.get('/newCen/free/testExten').then((res) => {
 		// 	console.log(`res`,res.data.msg);
@@ -65,6 +71,12 @@ export function activate(context: ExtensionContext) {
 
 	// 上一页
 	let getPreviousPage = commands.registerCommand('extension.getPreviousPage', () => {
+		bs.curPageRef.currnet--;
+		if (bs.curPageRef.currnet >= 1) {
+			bs.prevPage()
+			return
+		}
+		bs.stateRef.current = 'prev'
 		socket.emit('prevPage')
 	});
 

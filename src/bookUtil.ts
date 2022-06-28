@@ -146,19 +146,32 @@ import { Socket } from 'socket.io-client'
 //         return text.substring(this.start, this.end) + "    " + page_info;
 //     }
 // }
-
+declare interface Window {
+    me: any;
+}
 export const buildSocket = (socket: Socket) => {
-    console.log('socket',socket)
-    let content
-    socket.on('connect',() => {
+    console.log('socket', socket)
+    let content: { text: string, name: string } | undefined
+    const slicePageNum = { currnet: 1 }
+    const curPageRef = { currnet: 1 }
+    const stateRef: { current: 'prev' | 'next' } = { current: 'prev' }
+    socket.on('connect', () => {
         console.log('fuck socket')
     })
-    socket.on('disconnect',() => {
+    socket.on('disconnect', () => {
         console.log('fuck dis socket')
     })
     socket.on('novelContent', (res) => {
         content = res
-        window.setStatusBarMessage(res.text);
+        slicePageNum.currnet = Math.ceil(res.text.length / 60)
+        if (stateRef.current == 'prev') {
+            curPageRef.currnet = slicePageNum.currnet
+        } else {
+            curPageRef.currnet = 1
+        }
+        let startIdx = (curPageRef.currnet - 1) * 60
+        let endIdx = (curPageRef.currnet) * 60
+        window.setStatusBarMessage(content!.text.slice(startIdx, endIdx));
     })
     socket.on('error', (res) => {
         console.log('socket error')
@@ -166,7 +179,24 @@ export const buildSocket = (socket: Socket) => {
     socket.on('reconnect', (res) => {
         console.log('socket reconnect')
     })
+    const nextPage = () => {
+        // curPageRef.currnet++;
+        let startIdx = (curPageRef.currnet - 1) * 60
+        let endIdx = (curPageRef.currnet) * 60
+        window.setStatusBarMessage(content!.text.slice(startIdx, endIdx));
+    }
+    const prevPage = () => {
+        // curPageRef.currnet--;
+        let startIdx = (curPageRef.currnet - 1) * 60
+        let endIdx = (curPageRef.currnet) * 60
+        window.setStatusBarMessage(content!.text.slice(startIdx, endIdx));
+    }
     return {
-        content
+        content,
+        curPageRef,
+        slicePageNum,
+        nextPage,
+        stateRef,
+        prevPage
     }
 }

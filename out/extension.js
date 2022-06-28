@@ -50,6 +50,12 @@ function activate(context) {
     });
     // 下一页
     let getNextPage = vscode_1.commands.registerCommand('extension.getNextPage', () => {
+        bs.curPageRef.currnet++;
+        if (bs.slicePageNum.currnet >= bs.curPageRef.currnet) {
+            bs.nextPage();
+            return;
+        }
+        bs.stateRef.current = 'next';
         socket.emit('nextPage');
         // instance.get('/newCen/free/testExten').then((res) => {
         // 	console.log(`res`,res.data.msg);
@@ -57,6 +63,12 @@ function activate(context) {
     });
     // 上一页
     let getPreviousPage = vscode_1.commands.registerCommand('extension.getPreviousPage', () => {
+        bs.curPageRef.currnet--;
+        if (bs.curPageRef.currnet >= 1) {
+            bs.prevPage();
+            return;
+        }
+        bs.stateRef.current = 'prev';
         socket.emit('prevPage');
     });
     // 跳转某个页面
