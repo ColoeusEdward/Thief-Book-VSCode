@@ -163,6 +163,9 @@ export const buildSocket = (socket: Socket) => {
     })
     socket.on('novelContent', (res) => {
         content = res
+        if (!res || !res.text) {
+            console.error('fail to get novel', res);
+        }
         slicePageNum.currnet = Math.ceil(res.text.length / 60)
         if (stateRef.current == 'prev') {
             curPageRef.currnet = slicePageNum.currnet
@@ -181,12 +184,18 @@ export const buildSocket = (socket: Socket) => {
     })
     const nextPage = () => {
         // curPageRef.currnet++;
+        if (!content || !content.text) {
+            console.error('fail to get novel', content);
+        }
         let startIdx = (curPageRef.currnet - 1) * 60
         let endIdx = (curPageRef.currnet) * 60
         window.setStatusBarMessage(content!.text.slice(startIdx, endIdx));
     }
     const prevPage = () => {
         // curPageRef.currnet--;
+        if (!content || !content.text) {
+            console.error('fail to get novel', content);
+        }
         let startIdx = (curPageRef.currnet - 1) * 60
         let endIdx = (curPageRef.currnet) * 60
         window.setStatusBarMessage(content!.text.slice(startIdx, endIdx));

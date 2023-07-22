@@ -5,7 +5,7 @@ import { buildSocket } from './bookUtil';
 import { io, Socket } from "socket.io-client";
 import axios from 'axios'
 const instance = axios.create({
-	baseURL: 'https://meamoe.ml/koa',
+	baseURL: 'https://meamoe.one/koa',
 	timeout: 100000,
 	// headers: {'X-Custom-Header': 'foobar'}
 });

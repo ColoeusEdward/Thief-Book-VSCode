@@ -7,7 +7,7 @@ const bookUtil_1 = require("./bookUtil");
 const socket_io_client_1 = require("socket.io-client");
 const axios_1 = require("axios");
 const instance = axios_1.default.create({
-    baseURL: 'https://meamoe.ml/koa',
+    baseURL: 'https://meamoe.one/koa',
     timeout: 100000,
 });
 instance.get('/newCen/free/testExten').then((res) => {
